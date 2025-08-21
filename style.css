@@ -1,0 +1,164 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: cursive;
+}
+
+nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 8vh;
+    box-shadow: .1rem .1rem 2rem gray;
+    
+}
+
+nav .logo{
+
+   
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+nav .logo img{
+    min-height: 2rem;
+    max-width: 4rem;
+}
+.test{
+    color: gray;
+}
+.book{
+    color: rgb(100, 189, 207);
+}
+
+.nav_links ul{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 80vw;
+}
+
+.nav_links ul li{
+    list-style: none;
+}
+
+.nav_links ul li a{
+    text-decoration: none;
+    text-transform: capitalize;
+    color: grey;
+    text-shadow: .01rem .01rem 1rem yellowgreen;
+}
+
+.search_bar{
+    position: relative;
+}
+
+.search_bar input{
+    height: 4vh;
+    width: 100%;
+    border-radius: 1rem;
+    border: 1px solid gray;
+    
+    
+}
+.search_bar .fa-solid{
+    position: absolute;
+    right: 1rem;
+    top: 20%;
+}
+
+.translate img{
+    max-height: 2vh;
+    max-width: 2vW;
+}
+
+.get_started button{
+    height: 4vh;
+    width: 8vw;
+    background-color: rgba(101, 224, 101, 0.69);
+    border: none;
+    border-radius: 1rem;
+}
+
+@media (max-width:1000px) {
+
+    .nav_links{
+        display: none;
+    }
+    
+}
+
+.bar{
+    position: absolute;
+    right: 4rem;
+    
+    i{
+        scale: 1.5;
+    }
+
+    
+}
+
+@media (width<1000px) {
+    .bar{
+        display: flex;
+    }
+    
+}
+
+@media (width>1000px) {
+    .bar{
+        display: none;
+    }
+    .side_bar{
+        display: none;
+    }
+    
+}
+
+
+
+
+.side_bar{
+
+    min-height: 100vh;
+    min-width: 40vw;
+    background-color: gray;
+    position: absolute;
+    right: 0;
+    display: none;
+    justify-content: center;
+
+}
+/* .bar i:hover + .side_bar {
+    display: flex;
+} */
+.side_bar ul{
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    
+
+
+}
+
+.side_bar ul li{
+    margin: 2rem;
+    list-style: none;
+}
+
+.side_bar ul li a{
+    color: white;
+    text-decoration: none;
+}
+
+.side_bar button{
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
