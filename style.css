@@ -9,8 +9,13 @@ nav{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    min-height: 8vh;
+    height: 10vh;
     box-shadow: .1rem .1rem 2rem gray;
+    position: fixed;
+    background-color: white;
+    width: 100%;
+    z-index: 3;
+    overflow: hidden;
     
 }
 
@@ -22,7 +27,7 @@ nav .logo{
     justify-content: center;
 }
 
-nav .logo img{
+nav img{
     min-height: 2rem;
     max-width: 4rem;
 }
@@ -80,6 +85,8 @@ nav .logo img{
     background-color: rgba(101, 224, 101, 0.69);
     border: none;
     border-radius: 1rem;
+    box-shadow: .1rem .1rem .5rem gray;
+
 }
 
 @media (max-width:1000px) {
@@ -126,15 +133,16 @@ nav .logo img{
     min-height: 100vh;
     min-width: 40vw;
     background-color: gray;
-    position: absolute;
+    position: fixed;
+    opacity: .95;
     right: 0;
+    z-index: 2;
     display: none;
+    margin-top: 10vh;
     justify-content: center;
 
 }
-/* .bar i:hover + .side_bar {
-    display: flex;
-} */
+
 .side_bar ul{
 
     display: flex;
@@ -162,3 +170,181 @@ nav .logo img{
     align-items: center;
     justify-content: center;
 }
+
+.hero_sec{
+    min-height: 70vh;
+    background-image: linear-gradient(white,white,rgb(207, 225, 233));
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 3rem;
+    position: absolute;
+    width: 100%;
+    margin-top:6rem;
+
+}
+
+@media (width<730px) {
+    .hero_sec{
+        flex-direction: column;
+        
+
+
+
+    }
+    .study_img img{
+        scale: 2;
+    }
+    .study_img{
+          margin: 0 auto;
+
+    }
+}
+
+.hero>*{
+    padding: .2rem;
+
+    i{
+        color: greenyellow;
+    }
+}
+
+.get_start_btn button{
+    height: 2rem;
+    min-width: 50%;
+    background-color: rgba(101, 224, 101, 0.69);
+    border: none;
+    border-radius: 1rem;
+    margin-top: 1rem;
+    padding: .5rem;
+    box-shadow: .1rem .1rem .5rem gray;
+
+}
+
+.study_img img{
+    max-height: 40vh;
+    max-width: 30vw;
+    background-blend-mode:multiply;
+    
+}
+.student_data{
+    position: absolute;
+    display: flex;
+    justify-content: space-around;
+    min-width: 100%;
+    
+    border: 1px solid gray;
+    border-radius: 1rem;
+    padding: 2rem;
+    background-color: white;
+    flex-wrap: wrap;
+    margin: 1rem;
+}
+
+@media (width<824px) {
+
+    .student_data{
+
+       position: absolute;
+       top: 65vh;
+       scale: 1;
+       width: 100%;
+       border: none;
+       border-radius: none;
+       background-image:linear-gradient(rgba(30, 97, 136, 0.19));
+
+        
+        
+
+    }
+    .card1,.card2,.card3,.card4{
+        margin: 2rem;
+    }    
+    
+}
+
+@media (width>824px) {
+
+    .student_data{
+
+        bottom: -6rem;
+        scale: .6;
+        flex-wrap: nowrap;
+        min-width: 100%;
+
+
+    
+        
+        
+
+    }
+    
+    
+}
+
+.student_data .card1{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: rgba(101, 224, 101, 0.69);
+    padding: 1rem;
+    border-radius: 1rem;
+
+    i{
+        color: green;
+        scale: 3;
+        margin: 2rem;
+    }
+    
+}
+.student_data .card2{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    background-color: rgba(227, 153, 14, 0.489);
+    padding: 1rem;
+    border-radius: 1rem;
+    i{
+        color: orange;
+        scale: 3;
+        margin: 2rem;
+    }
+
+}
+.student_data .card3{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: rgba(221, 160, 221, 0.664);
+
+    i{
+        color: purple;
+        scale: 3;
+        margin: 2rem;
+    }
+
+}
+.student_data .card4{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    
+
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: rgb(217, 171, 171);
+
+    i{
+        color: indianred;
+        scale: 3;
+        margin: 2rem;
+    }
+
+}
+
+
+
