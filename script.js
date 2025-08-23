@@ -26,3 +26,20 @@ exam_tabs.forEach(el => {
     }));
 });
 
+let get_started=document.querySelector(".get_started");
+
+get_started.addEventListener("click",()=>{
+    window.location.href="signup.html"
+})
+
+let get_start_btn=document.querySelector(".get_start_btn");
+
+get_start_btn.addEventListener("click",()=>{
+    window.location.href="signup.html"
+})
+
+
+
+
+
+

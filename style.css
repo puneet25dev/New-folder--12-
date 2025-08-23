@@ -398,3 +398,57 @@ nav img{
 }
 
 
+/* Login Page Styling */
+
+.signup_container{
+    min-height: 50vh;
+    scale: 1;
+    width: 80vw;
+    border: 1px solid gray;
+    display: flex;
+    align-items: start;
+    justify-content: space-around;
+    flex-direction: column;
+    padding: 4rem;
+    margin: 8rem auto;
+    border-radius: 1rem;
+    position: relative;
+
+}
+.back{
+    position: absolute;
+    top: 1rem;
+}
+
+.sign_logo img{
+    height: 6rem;
+    width: 6rem;
+}
+.content>*{
+
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+
+    
+    
+}
+
+.content button{
+    width: 60%;
+    height: 2rem;
+    background-color: purple;
+    border: none;
+    border-radius: 1rem;
+    color: white;
+    font-weight: 900;
+}
+.input input{
+    height: 2rem;
+    padding: 1rem;
+    border: 1px solid gray;
+    border-radius: 1rem;
+}
+
+
+
+
