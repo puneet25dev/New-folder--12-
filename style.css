@@ -474,7 +474,7 @@ nav img{
     
 
 }
-.ssc_exams_list{
+.ssc_exams_list,.banking_exams_list,.teaching_exams_list{
     min-height: 50vh;
     width: 70vw;
     margin: 4rem auto;
@@ -492,29 +492,16 @@ nav img{
 
   
 }
-.banking_exams_list{
+.banking_exams_list,.teaching_exams_list{
 
-    min-height: 50vh;
-    width: 70vw;
-    margin: 4rem auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: center;
-    /* background-color: rgb(157, 106, 39); */
-
-    border: 1px solid gray;
-    border-radius: 1rem;
-    box-shadow: 1px 1px 10px lightgray;
-    position:absolute;
-    z-index:-1;
+    
      transform: translateX(150%);
-     transition: all .5s ease-in;
 
   
 
 }
-.ssc,.bank{
+
+.ssc,.bank,.teaching{
     display: flex;
     justify-content: space-around;
     max-width: 20vw;

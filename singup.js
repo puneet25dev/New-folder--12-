@@ -5,6 +5,6 @@ if(input.value.trim()!== ""){
     
     signup_btn.addEventListener("click",(e)=>{
         e.preventDefault();
-        console.log("form submit");
+        console.log("form submitted!");
     })
 }

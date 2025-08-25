@@ -40,25 +40,21 @@ get_start_btn.addEventListener("click",()=>{
 })
 
 
-let ssc_exams = document.querySelector(".ssc_exams");
-let ssc_exams_list = document.querySelector(".ssc_exams_list");
+const examLists = {
+    ssc: document.querySelector(".ssc_exams_list"),
+    banking: document.querySelector(".banking_exams_list"),
+    teaching: document.querySelector(".teaching_exams_list")
+};
 
-ssc_exams.addEventListener("click",()=>{
-    if(ssc_exams_list){
-        ssc_exams_list.style.transform="translateX(0%)";
-        banking_exams_list.style.transform="translateX(150%)";
-    }
-})
+function showExamList(active) {
+    Object.entries(examLists).forEach(([key, el]) => {
+        el.style.transform = key === active ? "translateX(0%)" : "translateX(150%)";
+    });
+}
 
-let banking_exams_list=document.querySelector(".banking_exams_list");
-let banking_exams=document.querySelector(".banking_exams");
-
-banking_exams.addEventListener("click",()=>{
-    if(banking_exams_list){
-        ssc_exams_list.style.transform="translateX(150%)";
-        banking_exams_list.style.transform="translateX(0%)";
-    }
-})
+document.querySelector(".ssc_exams").addEventListener("click", () => showExamList("ssc"));
+document.querySelector(".banking_exams").addEventListener("click", () => showExamList("banking"));
+document.querySelector(".teaching_exams").addEventListener("click", () => showExamList("teaching"));
 
 
 
