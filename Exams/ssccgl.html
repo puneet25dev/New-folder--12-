@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SSC CGL Mock Test Dashboard</title>
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --accent:#0ea5a4; --muted:#94a3b8; --success:#10b981; --danger:#ef4444; --glass: rgba(255,255,255,0.03);
+      --max-w:1000px;
+    }
+    *{box-sizing:border-box}
+    body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial; margin:0; background:linear-gradient(180deg,#071021 0%, #071827 60%); color:#e6eef6; display:flex; align-items:flex-start; justify-content:center; padding:28px;}
+    .container{width:100%; max-width:var(--max-w);} 
+    header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px}
+    header h1{margin:0;font-size:18px; letter-spacing:0.3px}
+    header .meta{color:var(--muted); font-size:13px}
+
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:16px; box-shadow: 0 6px 18px rgba(2,6,23,0.6);}
+
+    .grid{display:grid; grid-template-columns: 320px 1fr; gap:16px}
+
+    /* Sidebar */
+    .sidebar{padding:12px; height:720px; overflow:auto}
+    .test-info{display:flex; gap:12px; align-items:center}
+    .test-meta{font-size:13px; color:var(--muted)}
+    .start-btn{background:var(--accent); color:#042024; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:600}
+
+    /* Palette */
+    .palette{display:grid; grid-template-columns: repeat(5,1fr); gap:8px; margin-top:12px}
+    .q-num{padding:8px; border-radius:6px; text-align:center; cursor:pointer; font-weight:600}
+    .q-num.empty{background:var(--glass); color:var(--muted)}
+    .q-num.current{outline:2px solid rgba(14,165,164,0.18); background:linear-gradient(90deg, rgba(14,165,164,0.08), rgba(14,165,164,0.02))}
+    .q-num.answered{background:linear-gradient(90deg, rgba(16,185,129,0.12), rgba(16,185,129,0.02)); color:var(--success)}
+    .q-num.review{background:linear-gradient(90deg, rgba(245,158,11,0.12), rgba(245,158,11,0.02)); color:#f97316}
+
+    /* Main area */
+    .main{padding:14px; height:720px; display:flex; flex-direction:column}
+    .topbar{display:flex; align-items:center; justify-content:space-between; gap:12px}
+    .timer{font-weight:700; font-size:18px}
+
+    .question-area{flex:1; margin-top:12px; display:flex; gap:12px}
+    .question-box{flex:1; background:var(--card); padding:14px; border-radius:10px}
+    .choices{margin-top:12px; display:grid; gap:8px}
+    .choice{padding:10px; border-radius:8px; background:var(--glass); cursor:pointer}
+    .choice:hover{transform:translateY(-2px)}
+    .choice.selected{outline:2px solid rgba(16,185,129,0.16)}
+
+    .controls{display:flex; gap:8px; margin-top:12px}
+    .btn{padding:8px 12px; border-radius:8px; border:none; cursor:pointer; font-weight:600}
+    .btn.secondary{background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted)}
+    .btn.primary{background:var(--accent); color:#042024}
+    .btn.warn{background:#f59e0b; color:#041014}
+    .btn.danger{background:var(--danger); color:#fff}
+
+    /* Result */
+    .result{padding:10px; border-radius:10px}
+    .breakdown{display:flex; gap:12px; margin-top:8px}
+    .bar{background:rgba(255,255,255,0.03); border-radius:8px; padding:8px; flex:1}
+
+    /* Past attempts */
+    .past-list{margin-top:12px}
+    .past-item{display:flex; justify-content:space-between; gap:12px; padding:10px; border-radius:8px; background:rgba(255,255,255,0.01); margin-bottom:8px}
+
+    footer{margin-top:14px; display:flex; justify-content:space-between; color:var(--muted); font-size:13px}
+
+    /* Responsive */
+    @media (max-width:900px){.grid{grid-template-columns:1fr; } .sidebar{height:auto} .main{height:auto}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>SSC CGL Mock Test Dashboard</h1>
+        <div class="meta">Practice full-length mocks — timer, review, and results.</div>
+      </div>
+      <div class="meta">Local: Saved in your browser • No servers</div>
+    </header>
+
+    <div class="grid">
+      <aside class="card sidebar">
+        <div class="test-info">
+          <div style="flex:1">
+            <div style="font-weight:700">Full Mock: SSC CGL (Combined)</div>
+            <div class="test-meta">Total Questions: <span id="total-qs">--</span> • Duration: <span id="duration-min">60</span> mins</div>
+          </div>
+          <div>
+            <button id="start-btn" class="start-btn">Start Test</button>
+          </div>
+        </div>
+
+        <div style="margin-top:14px">
+          <div style="font-weight:700; font-size:13px; margin-bottom:8px">Question Palette</div>
+          <div id="palette" class="palette"></div>
+        </div>
+
+        <div style="margin-top:14px">
+          <div style="display:flex; justify-content:space-between; align-items:center"><strong>Past Attempts</strong><button id="clear-attempts" class="btn secondary" style="padding:6px 8px">Clear</button></div>
+          <div id="past-list" class="past-list"></div>
+        </div>
+
+      </aside>
+
+      <main class="card main">
+        <div class="topbar">
+          <div>
+            <div style="font-size:14px; font-weight:700" id="section-name">Section: -</div>
+            <div class="test-meta" id="q-counter">Question <span id="current-index">0</span> of <span id="total-qs-2">0</span></div>
+          </div>
+          <div style="display:flex; gap:12px; align-items:center">
+            <div class="timer" id="timer">00:00:00</div>
+            <div>
+              <button id="submit-btn" class="btn danger">Submit</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-area">
+          <section class="question-box" id="question-box">
+            <div id="question-text" style="font-weight:700">Please start the test.</div>
+            <div class="choices" id="choices"></div>
+
+            <div class="controls">
+              <button id="prev-btn" class="btn secondary">Previous</button>
+              <button id="next-btn" class="btn secondary">Next</button>
+              <button id="mark-btn" class="btn warn">Mark for Review</button>
+              <div style="flex:1"></div>
+              <button id="save-answer" class="btn primary">Save Answer</button>
+            </div>
+          </section>
+
+          <aside style="width:280px; display:flex; flex-direction:column; gap:12px">
+            <div class="card result" style="padding:12px">
+              <div style="display:flex; justify-content:space-between; align-items:center">
+                <div><strong>Progress</strong></div>
+                <div id="progress-percent">0%</div>
+              </div>
+              <div class="breakdown">
+                <div class="bar">
+                  <div class="test-meta">Answered</div>
+                  <div id="ans-count">0</div>
+                </div>
+                <div class="bar">
+                  <div class="test-meta">Marked</div>
+                  <div id="mark-count">0</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="padding:12px">
+              <div style="font-weight:700">Controls</div>
+              <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap">
+                <button id="goto-first" class="btn secondary">First</button>
+                <button id="goto-last" class="btn secondary">Last</button>
+                <button id="review-list" class="btn secondary">Review List</button>
+                <button id="export-results" class="btn" style="background:rgba(14,165,164,0.07); color:var(--accent)">Export</button>
+              </div>
+            </div>
+
+            <div class="card" style="padding:12px;">
+              <div style="font-weight:700">Legend</div>
+              <div style="margin-top:8px; font-size:13px; color:var(--muted)">Green = answered • Orange = marked • Gray = unanswered • Bold = current</div>
+            </div>
+
+          </aside>
+        </div>
+
+        <div id="result-screen" style="display:none; margin-top:12px"></div>
+
+        <footer>
+          <div>SSC CGL Mock • Demo</div>
+          <div id="save-status"></div>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // =====================
+    // DATA: Questions Bank
+    // =====================
+    // This is a sample complete question set. You can add more.
+    const QUESTIONS = [
+      // General Awareness
+      {id:1, section:'General Awareness', q:'Which of the following is NOT a fundamental duty mentioned in the Indian Constitution?', choices:['To vote in elections','To protect public property','To abide by the constitution','To respect the national flag'], answer:0},
+      {id:2, section:'General Awareness', q:'Who is known as the "Father of the Indian Constitution"?', choices:['Mahatma Gandhi','B. R. Ambedkar','Jawaharlal Nehru','Sardar Patel'], answer:1},
+      {id:3, section:'General Awareness', q:'The headquarters of WHO is located at which city?', choices:['Geneva','New York','Paris','London'], answer:0},
+
+      // Quantitative Aptitude
+      {id:4, section:'Quantitative Aptitude', q:'If 5x + 3 = 23, then value of x is?', choices:['2','4','6','3'], answer:1},
+      {id:5, section:'Quantitative Aptitude', q:'The compound interest on a sum of money for 2 years at annual rate of 10% compounded annually is Rs. 210. The sum is?', choices:['2000','1900','1800','2200'], answer:0},
+      {id:6, section:'Quantitative Aptitude', q:'What is the HCF of 54 and 24?', choices:['6','3','12','18'], answer:2},
+
+      // Reasoning
+      {id:7, section:'Reasoning', q:'If in a certain code, CAT is written as DBU, how is DOG written in that code?', choices:['EPH','EPQ','EPH','EPH'], answer:0},
+      {id:8, section:'Reasoning', q:'Find the odd one out: 2, 3, 5, 7, 9, 11', choices:['2','3','9','11'], answer:2},
+      {id:9, section:'Reasoning', q:'If A > B, B = C and C > D, which statement is true?', choices:['A > D','D > A','A = D','Cannot be determined'], answer:0},
+
+      // English Language
+      {id:10, section:'English', q:'Choose the correctly spelt word.', choices:['Accomodate','Acommodate','Accommodate','Acommmodate'], answer:2},
+      {id:11, section:'English', q:'Select the synonym of "abundant".', choices:['Scarce','Plentiful','Empty','Rare'], answer:1},
+      {id:12, section:'English', q:'Fill the blank: She ____ to school every day.', choices:['go','goes','gone','going'], answer:1},
+
+      // More questions to reach a meaningful mock size
+      {id:13, section:'Quantitative Aptitude', q:'If a train covers 240 km in 3 hours, its average speed is?', choices:['70 km/h','80 km/h','90 km/h','100 km/h'], answer:1},
+      {id:14, section:'General Awareness', q:'Which Amendment of the Indian Constitution introduced the Right to Information as a fundamental right?', choices:['42nd','86th','74th','None of these'], answer:3},
+      {id:15, section:'Reasoning', q:'Series: 2, 4, 8, 16, ? next number is', choices:['20','32','24','30'], answer:1},
+      {id:16, section:'English', q:'Identify the part of speech: "Quickly"', choices:['Noun','Adjective','Adverb','Verb'], answer:2},
+      {id:17, section:'Quantitative Aptitude', q:'If x^2 = 49, x is?', choices:['-7 only','7 only','both 7 and -7','0'], answer:2},
+      {id:18, section:'General Awareness', q:'Who among the following wrote the book "Discovery of India"?', choices:['Nehru','Gandhi','Tagore','Ambedkar'], answer:0},
+      {id:19, section:'Reasoning', q:'If 3 pencils cost ₹15, how much do 7 pencils cost?', choices:['35','30','28','25'], answer:0},
+      {id:20, section:'English', q:'Choose the antonym of "transparent".', choices:['Clear','Opaque','Translucent','Seen'], answer:1}
+    ];
+
+    // ================
+    // App State
+    // ================
+    const state = {
+      durationMin: 60, // default 60 minutes
+      remainingSec: 60*60,
+      timerId: null,
+      started:false,
+      currentIndex:0,
+      answers: {}, // {questionIndex: selectedChoiceIndex}
+      marked:{}, // {questionIndex:true}
+      startTime: null,
+      submitted:false,
+      attemptsKey: 'ssc_cgl_attempts'
+    }
+
+    // =========
+    // Helpers
+    // =========
+    const el = id => document.getElementById(id);
+    const formatTime = s => {
+      const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+      return [h,m,sec].map(x=>String(x).padStart(2,'0')).join(':');
+    }
+
+    // ================
+    // Initialize UI
+    // ================
+    function init(){
+      el('total-qs').textContent = QUESTIONS.length;
+      el('total-qs-2').textContent = QUESTIONS.length;
+      el('duration-min').textContent = state.durationMin;
+      el('timer').textContent = formatTime(state.remainingSec);
+      renderPalette();
+      bindEvents();
+      loadPastAttempts();
+    }
+
+    // Palette buttons
+    function renderPalette(){
+      const p = el('palette'); p.innerHTML='';
+      QUESTIONS.forEach((q,i)=>{
+        const d = document.createElement('div');
+        d.className = 'q-num ' + (state.answers[i]===undefined ? 'empty': 'answered');
+        if(state.currentIndex===i) d.classList.add('current');
+        if(state.marked[i]) d.classList.add('review');
+        d.textContent = i+1;
+        d.onclick = ()=>{gotoQuestion(i)};
+        p.appendChild(d);
+      });
+      updateCounts();
+    }
+
+    function updateCounts(){
+      const answered = Object.keys(state.answers).length;
+      const marked = Object.keys(state.marked).length;
+      const percent = Math.round((answered/QUESTIONS.length)*100);
+      el('ans-count').textContent = answered;
+      el('mark-count').textContent = marked;
+      el('progress-percent').textContent = percent + '%';
+    }
+
+    // Navigation
+    function bindEvents(){
+      el('start-btn').addEventListener('click', startTest);
+      el('next-btn').addEventListener('click', ()=>{gotoQuestion(state.currentIndex+1)});
+      el('prev-btn').addEventListener('click', ()=>{gotoQuestion(state.currentIndex-1)});
+      el('mark-btn').addEventListener('click', toggleMark);
+      el('save-answer').addEventListener('click', saveAnswer);
+      el('submit-btn').addEventListener('click', submitHandler);
+      el('goto-first').addEventListener('click', ()=>gotoQuestion(0));
+      el('goto-last').addEventListener('click', ()=>gotoQuestion(QUESTIONS.length-1));
+      el('review-list').addEventListener('click', showReviewList);
+      el('clear-attempts').addEventListener('click', clearAttempts);
+      el('export-results').addEventListener('click', exportCurrentResult);
+    }
+
+    function startTest(){
+      if(state.started) return;
+      state.started = true;
+      state.startTime = new Date().toISOString();
+      state.remainingSec = state.durationMin*60;
+      el('start-btn').disabled = true; el('start-btn').textContent='Test Running';
+      el('save-status').textContent = '';
+      gotoQuestion(0);
+      state.timerId = setInterval(()=>{
+        state.remainingSec -= 1;
+        el('timer').textContent = formatTime(state.remainingSec);
+        if(state.remainingSec<=0){
+          clearInterval(state.timerId);
+          autoSubmit();
+        }
+      },1000);
+    }
+
+    function gotoQuestion(idx){
+      if(idx<0) idx=0; if(idx>=QUESTIONS.length) idx=QUESTIONS.length-1;
+      state.currentIndex = idx;
+      renderQuestion();
+      renderPalette();
+      el('current-index').textContent = idx+1;
+    }
+
+    function renderQuestion(){
+      const q = QUESTIONS[state.currentIndex];
+      el('section-name').textContent = 'Section: ' + q.section;
+      el('question-text').textContent = q.q;
+      const ch = el('choices'); ch.innerHTML='';
+      q.choices.forEach((c,i)=>{
+        const d = document.createElement('div'); d.className='choice'; d.textContent = String.fromCharCode(65+i)+'. '+c;
+        d.onclick = ()=>{ selectChoice(i) };
+        if(state.answers[state.currentIndex]===i) d.classList.add('selected');
+        ch.appendChild(d);
+      });
+    }
+
+    function selectChoice(choiceIndex){
+      state.answers[state.currentIndex] = choiceIndex;
+      renderQuestion();
+      renderPalette();
+      updateCounts();
+    }
+
+    function saveAnswer(){
+      // is already set when selecting; we simply show tiny feedback and update
+      updateCounts();
+      el('save-status').textContent = 'Answer saved at ' + new Date().toLocaleTimeString();
+      setTimeout(()=>el('save-status').textContent='',2500);
+    }
+
+    function toggleMark(){
+      const i = state.currentIndex;
+      if(state.marked[i]) delete state.marked[i]; else state.marked[i] = true;
+      renderPalette(); updateCounts();
+    }
+
+    function showReviewList(){
+      const keys = Object.keys(state.marked).map(k=>Number(k));
+      if(keys.length===0){ alert('No questions marked for review'); return; }
+      const list = keys.map(k=> (k+1)).join(', ');
+      alert('Marked questions: ' + list);
+    }
+
+    // ==================
+    // Submit / Results
+    // ==================
+    function submitHandler(){
+      if(!confirm('Submit test? You cannot change answers after submitting.')) return;
+      submitTest(false);
+    }
+
+    function autoSubmit(){
+      alert('Time is up! Your test will be submitted automatically.');
+      submitTest(true);
+    }
+
+    function submitTest(auto){
+      if(state.submitted) return;
+      state.submitted = true;
+      if(state.timerId) clearInterval(state.timerId);
+
+      // scoring: +4 for correct, -1 for wrong (example), unanswered 0
+      const scoring={correct:4, wrong:-1, unattempt:0};
+      let score=0, attempted=0, correctCount=0;
+      const perSection = {};
+      const review = [];
+
+      QUESTIONS.forEach((q,i)=>{
+        const sec = q.section; if(!perSection[sec]) perSection[sec] = {total:0, correct:0, attempted:0};
+        perSection[sec].total++;
+        const ans = state.answers[i];
+        if(ans===undefined){ review.push({i, status:'unattempted'}); score += scoring.unattempt; }
+        else{
+          attempted++; perSection[sec].attempted++;
+          if(ans===q.answer){ score += scoring.correct; correctCount++; perSection[sec].correct++; review.push({i, status:'correct'}); }
+          else{ score += scoring.wrong; review.push({i, status:'wrong', chosen:ans}); }
+        }
+      });
+
+      // clamp score
+      if(score < 0) score = Math.max(score, 0);
+
+      const resultObj = {
+        timestamp: new Date().toISOString(),
+        durationMin: state.durationMin,
+        score, attempted, correctCount, total:QUESTIONS.length,
+        perSection, review, answers: state.answers
+      };
+
+      saveAttempt(resultObj);
+      showResult(resultObj);
+    }
+
+    function showResult(res){
+      const out = el('result-screen'); out.style.display='block'; out.innerHTML = '';
+      const wrap = document.createElement('div'); wrap.className='card';
+      wrap.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center"><div><h3 style='margin:0'>Test Result</h3><div class='test-meta'>Submitted: ${new Date(res.timestamp).toLocaleString()}</div></div><div style='text-align:right'><div style='font-size:28px;font-weight:800'>${res.score}</div><div class='test-meta'>Score</div></div></div>
+      `;
+
+      // summary
+      const summary = document.createElement('div'); summary.style.marginTop='12px';
+      summary.innerHTML = `
+        <div style='display:flex; gap:12px; flex-wrap:wrap'>
+          <div style='padding:8px; background:rgba(255,255,255,0.02); border-radius:8px'><strong>${res.correctCount}</strong><div class='test-meta'>Correct</div></div>
+          <div style='padding:8px; background:rgba(255,255,255,0.02); border-radius:8px'><strong>${res.attempted - res.correctCount}</strong><div class='test-meta'>Wrong</div></div>
+          <div style='padding:8px; background:rgba(255,255,255,0.02); border-radius:8px'><strong>${res.total - res.attempted}</strong><div class='test-meta'>Unattempted</div></div>
+        </div>
+      `;
+
+      wrap.appendChild(summary);
+
+      // per-section breakdown
+      const secDiv = document.createElement('div'); secDiv.style.marginTop='12px';
+      secDiv.innerHTML = '<strong>Section-wise performance</strong>';
+      const secList = document.createElement('div'); secList.style.marginTop='8px';
+      for(const s in res.perSection){
+        const obj = res.perSection[s];
+        const pct = Math.round((obj.correct/obj.total)*100)||0;
+        const item = document.createElement('div'); item.style.padding='8px'; item.style.marginTop='6px'; item.style.borderRadius='8px'; item.style.background='rgba(255,255,255,0.01)';
+        item.innerHTML = `<div style='display:flex;justify-content:space-between'><div><strong>${s}</strong><div class='test-meta'>${obj.correct}/${obj.total} correct</div></div><div>${pct}%</div></div>`;
+        secList.appendChild(item);
+      }
+      secDiv.appendChild(secList);
+      wrap.appendChild(secDiv);
+
+      // detailed review
+      const reviewDiv = document.createElement('div'); reviewDiv.style.marginTop='12px'; reviewDiv.innerHTML = '<strong>Review answers</strong>';
+      const rList = document.createElement('div'); rList.style.marginTop='8px';
+      QUESTIONS.forEach((q,i)=>{
+        const your = res.answers[i];
+        const row = document.createElement('div'); row.style.padding='8px'; row.style.marginTop='6px'; row.style.borderRadius='8px'; row.style.background='rgba(255,255,255,0.01)';
+        const status = your===undefined ? 'Unattempted' : (your===q.answer? 'Correct':'Wrong');
+        row.innerHTML = `<div style='display:flex;justify-content:space-between; gap:8px'><div style='flex:1'><strong>Q${i+1}.</strong> ${q.q}<div class='test-meta'>Your: ${your===undefined? '—' : q.choices[your]} • Ans: ${q.choices[q.answer]}</div></div><div style='min-width:90px; text-align:right'><div style='font-weight:700'>${status}</div></div></div>`;
+        rList.appendChild(row);
+      });
+      reviewDiv.appendChild(rList);
+      wrap.appendChild(reviewDiv);
+
+      out.appendChild(wrap);
+
+      // disable test UI
+      disableTestUI();
+    }
+
+    function disableTestUI(){
+      document.querySelectorAll('.choice').forEach(c=>c.onclick=null);
+      el('save-answer').disabled=true; el('mark-btn').disabled=true; el('start-btn').disabled=true; el('next-btn').disabled=true; el('prev-btn').disabled=true; el('submit-btn').disabled=true;
+    }
+
+    // ==============
+    // Storage
+    // ==============
+    function saveAttempt(obj){
+      const list = JSON.parse(localStorage.getItem(state.attemptsKey) || '[]');
+      list.unshift(obj); // latest first
+      localStorage.setItem(state.attemptsKey, JSON.stringify(list));
+      loadPastAttempts();
+    }
+
+    function loadPastAttempts(){
+      const list = JSON.parse(localStorage.getItem(state.attemptsKey) || '[]');
+      const out = el('past-list'); out.innerHTML='';
+      if(list.length===0){ out.innerHTML = '<div class="test-meta">No attempts yet</div>'; return; }
+      list.slice(0,10).forEach((a,idx)=>{
+        const item = document.createElement('div'); item.className='past-item';
+        item.innerHTML = `<div><strong>Attempt ${list.length-idx}</strong><div class='test-meta'>${new Date(a.timestamp).toLocaleString()}</div></div><div style='text-align:right'><div style='font-weight:700'>${a.score}</div><div class='test-meta'>${a.correctCount}/${a.total}</div><div style='margin-top:6px'><button class='btn secondary' data-idx='${idx}'>View</button></div></div>`;
+        out.appendChild(item);
+      });
+      // bind view buttons
+      out.querySelectorAll('button[data-idx]').forEach(btn=>{
+        btn.onclick = ()=>{
+          const idx = Number(btn.getAttribute('data-idx'));
+          const attempts = JSON.parse(localStorage.getItem(state.attemptsKey) || '[]');
+          const obj = attempts[idx];
+          if(obj) showResult(obj);
+        }
+      });
+    }
+
+    function clearAttempts(){
+      if(!confirm('Clear all saved attempts?')) return;
+      localStorage.removeItem(state.attemptsKey);
+      loadPastAttempts();
+    }
+
+    function exportCurrentResult(){
+      // Export last attempt as JSON
+      const list = JSON.parse(localStorage.getItem(state.attemptsKey) || '[]');
+      if(list.length===0){ alert('No saved attempts to export'); return; }
+      const blob = new Blob([JSON.stringify(list[0], null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'ssc_cgl_attempt.json'; a.click(); URL.revokeObjectURL(url);
+    }
+
+    // =============
+    // Auto start small demo
+    // =============
+    // initialize
+    init();
+  </script>
+</body>
+</html>

@@ -43,7 +43,8 @@ get_start_btn.addEventListener("click",()=>{
 const examLists = {
     ssc: document.querySelector(".ssc_exams_list"),
     banking: document.querySelector(".banking_exams_list"),
-    teaching: document.querySelector(".teaching_exams_list")
+    teaching: document.querySelector(".teaching_exams_list"),
+    civil: document.querySelector(".civil_service_list")
 };
 
 function showExamList(active) {
@@ -55,6 +56,7 @@ function showExamList(active) {
 document.querySelector(".ssc_exams").addEventListener("click", () => showExamList("ssc"));
 document.querySelector(".banking_exams").addEventListener("click", () => showExamList("banking"));
 document.querySelector(".teaching_exams").addEventListener("click", () => showExamList("teaching"));
+document.querySelector(".civil_service").addEventListener("click", () => showExamList("civil"));
 
 
 

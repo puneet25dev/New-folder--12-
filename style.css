@@ -3,13 +3,10 @@
     padding: 0;
     box-sizing: border-box;
     font-family: cursive;
+    
 }
-html,body{
+body{
     overflow-x: hidden;
-
-    &::-webkit-scrollbar{
-        display: none;
-    }
 }
 
 nav{
@@ -469,12 +466,8 @@ nav img{
     align-items: center;
     margin-top: 30vh;
     
-
-
-    
-
 }
-.ssc_exams_list,.banking_exams_list,.teaching_exams_list{
+.ssc_exams_list,.banking_exams_list,.teaching_exams_list,.civil_service_list{
     min-height: 50vh;
     width: 70vw;
     margin: 4rem auto;
@@ -492,7 +485,7 @@ nav img{
 
   
 }
-.banking_exams_list,.teaching_exams_list{
+.banking_exams_list,.teaching_exams_list,.civil_service_list{
 
     
      transform: translateX(150%);
@@ -501,7 +494,7 @@ nav img{
 
 }
 
-.ssc,.bank,.teaching{
+.ssc,.bank,.teaching,.civil{
     display: flex;
     justify-content: space-around;
     max-width: 20vw;
@@ -516,9 +509,14 @@ nav img{
         height: 4rem;
         width: 4rem;
         margin: 1rem;
+        border-radius: 50%;
+        
     }
 }
 
+.ssc:hover,.bank:hover,.teaching:hover,.civil:hover{
+    background-color: lightgray;
+}
 
 
 
